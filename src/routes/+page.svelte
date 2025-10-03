@@ -19,33 +19,33 @@
     let showOverlay = true;
 
     function generateCalendar() {
-        const today = new Date();
-        const currentMonth = today.getMonth();
-        const year = today.getFullYear();
+    const today = new Date();
+    const currentMonth = today.getMonth();
+    const year = today.getFullYear();
 
-        // === Full previous month ===
-        const prevMonth = currentMonth === 0 ? 11 : currentMonth - 1;
-        const prevYear = currentMonth === 0 ? year - 1 : year;
-        const prevMonthLastDay = new Date(prevYear, prevMonth + 1, 0).getDate();
+    // === Full previous month ===
+    const prevMonth = currentMonth === 0 ? 11 : currentMonth - 1;
+    const prevYear = currentMonth === 0 ? year - 1 : year;
+    const prevMonthLastDay = new Date(prevYear, prevMonth + 1, 0).getDate();
 
-        for (let d = 1; d <= prevMonthLastDay; d++) {
-            days.push({
-                date: `${prevYear}-${prevMonth + 1}-${d}`,
-                status: "none",
-                month: "prev",
-            });
-        }
-
-        // === Full current month ===
-        const lastDay = new Date(year, currentMonth + 1, 0).getDate();
-        for (let d = 1; d <= lastDay; d++) {
-            days.push({
-                date: `${year}-${currentMonth + 1}-${d}`,
-                status: "none",
-                month: "current",
-            });
-        }
+    for (let d = 1; d <= prevMonthLastDay; d++) {
+        days.push({
+            date: new Date(prevYear, prevMonth, d),
+            status: "none",
+            month: "prev",
+        });
     }
+
+    // === Full current month ===
+    const lastDay = new Date(year, currentMonth + 1, 0).getDate();
+    for (let d = 1; d <= lastDay; d++) {
+        days.push({
+            date: new Date(year, currentMonth, d),
+            status: "none",
+            month: "current",
+        });
+    }
+}
 
     function calcDaysPassed() {
         if (!periodStart) {
@@ -61,57 +61,49 @@
     }
 
     function markPeriod() {
-        if (!periodStart) return;
+    if (!periodStart) return;
 
-        days = days.map((day) => ({ ...day, status: "none" }));
+    days = days.map((day) => ({ ...day, status: "none" }));
 
-        const start = new Date(periodStart);
+    const start = new Date(periodStart);
 
-        // Completed cycle (past 4 days)
-        for (let i = 0; i < PERIOD_WINDOW; i++) {
-            const d = new Date(start);
-            d.setDate(start.getDate() + i);
-            const key = `${d.getFullYear()}-${d.getMonth() + 1}-${d.getDate()}`;
-            days = days.map((day) =>
-                day.date === key ? { ...day, status: "completed" } : day,
-            );
-        }
-
-        // Mark ovulation window (days 12-14, center around day 14)
-        for (
-            let i = OVULATION_DAY - 1;
-            i < OVULATION_DAY + OVULATION_WINDOW - 1;
-            i++
-        ) {
-            const d = new Date(start);
-            d.setDate(start.getDate() + i);
-            const key = `${d.getFullYear()}-${d.getMonth() + 1}-${d.getDate()}`;
-            days = days.map((day) =>
-                day.date === key ? { ...day, status: "ovulation" } : day,
-            );
-        }
-
-        // Predict next cycle (assume 28-day cycle)
-        const next = new Date(start);
-        next.setDate(start.getDate() + CYCLE_LENGTH);
-        for (let i = 0; i < PERIOD_WINDOW; i++) {
-            const d = new Date(next);
-            d.setDate(next.getDate() + i);
-            const key = `${d.getFullYear()}-${d.getMonth() + 1}-${d.getDate()}`;
-            days = days.map((day) =>
-                day.date === key ? { ...day, status: "upcoming" } : day,
-            );
-        }
+    // Completed cycle (past PERIOD_WINDOW days)
+    for (let i = 0; i < PERIOD_WINDOW; i++) {
+        const d = new Date(start);
+        d.setDate(start.getDate() + i);
+        days = days.map((day) =>
+            day.date.getTime() === d.getTime() ? { ...day, status: "completed" } : day,
+        );
     }
 
-    function selectDate(date: string) {
-        periodStart = date;
-        localStorage.setItem("periodStart", periodStart);
-        calcDaysPassed();
-        markPeriod();
-        showModal = false;
-        // Don't hide overlay, only close button can do that
+    // Ovulation window (days 12-14)
+    for (let i = OVULATION_DAY - 1; i < OVULATION_DAY + OVULATION_WINDOW - 1; i++) {
+        const d = new Date(start);
+        d.setDate(start.getDate() + i);
+        days = days.map((day) =>
+            day.date.getTime() === d.getTime() ? { ...day, status: "ovulation" } : day,
+        );
     }
+
+    // Predict next cycle (assume 28-day cycle)
+    const next = new Date(start);
+    next.setDate(start.getDate() + CYCLE_LENGTH);
+    for (let i = 0; i < PERIOD_WINDOW; i++) {
+        const d = new Date(next);
+        d.setDate(next.getDate() + i);
+        days = days.map((day) =>
+            day.date.getTime() === d.getTime() ? { ...day, status: "upcoming" } : day,
+        );
+    }
+}
+
+    function selectDate(date: Date) {
+    periodStart = date.toISOString(); // save string in localStorage
+    localStorage.setItem("periodStart", periodStart);
+    calcDaysPassed();
+    markPeriod();
+    showModal = false;
+}
 
     function closeOverlay() {
         showOverlay = false;
@@ -252,7 +244,7 @@
                         <div
                             class="flex items-center justify-center w-full h-full rounded-full bg-white font-inter text-red-500"
                         >
-                            {new Date(day.date).getDate()}
+                          {day.date.getDate()}
                         </div>
                     </div>
                 {:else}
@@ -262,7 +254,7 @@
             ${day.status === "ovulation" ? "ovulation text-white" : ""}
             ${day.status === "active" ? "border border-red-500 text-red-500" : ""}`}
                     >
-                        {new Date(day.date).getDate()}
+                        {day.date.getDate()}
                     </div>
                 {/if}
 
