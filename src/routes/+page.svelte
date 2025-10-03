@@ -99,7 +99,7 @@
 
     function selectDate(date: Date) {
     periodStart = date.toISOString(); // save string in localStorage
-    localStorage.setItem("periodStart", periodStart);
+    localStorage.setItem("period", periodStart);
     calcDaysPassed();
     markPeriod();
     showModal = false;
@@ -111,7 +111,7 @@
 
     onMount(() => {
         generateCalendar();
-        const stored = localStorage.getItem("periodStart");
+        const stored = localStorage.getItem("period");
 
         if (stored) {
             periodStart = stored;
