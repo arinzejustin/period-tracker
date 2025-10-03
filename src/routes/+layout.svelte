@@ -3,6 +3,7 @@
   import { browser } from "$app/environment";
 
   import Header from "$lib/components/Header.svelte";
+  import Bottom from "$lib/components/Bottom.svelte";
   import "../app.css";
 
   onMount(() => {
@@ -24,4 +25,7 @@
     <Header />
   </div>
   <slot />
+  <div class="fixed bottom-0 left-0 right-0 z-10">
+    <Bottom />
+  </div>
 </div>

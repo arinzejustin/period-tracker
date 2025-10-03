@@ -163,7 +163,7 @@
                     ${
                         periodStart
                             ? i < daysPassed
-                                ? "bg-blue-500"
+                                ? "bg-purple-500"
                                 : i >= 0 && i < PERIOD_WINDOW
                                   ? "bg-red-500"
                                   : i >= OVULATION_DAY - 1 &&
@@ -241,7 +241,7 @@
 
 <!-- === Calendar === -->
 <div class="relative z-10">
-    <div class="flex justify-center min-h-screen">
+    <div class="flex justify-center min-h-screen mb-14">
         <div class="grid grid-cols-7 gap-2 p-4 lg:hidden">
             {#each days as day, i}
                 {#if day.status === "upcoming"}

@@ -3,7 +3,7 @@
     let typedText = "";
 
     const message =
-        "You are my everything, Chismdi Blessing. Every moment with you is a gift. I love you more than words can say! 💕";
+        "Happy Anniversary, babe ❤️ Can you believe it’s been a whole year? We’ve shared 365 days of laughter, late-night talks, silly fights, and way too many moments of your stubbornness making me want to pull my hair out 😅 but I wouldn’t change a thing. You drive me crazy, but you also make me better, challenge me, love me fiercely, and complete me in ways I never knew I needed. I love you more than words can say and cherish every part of you, even the parts that make me roll my eyes. Thank you for being my person and choosing me, everything we’ve built, and everything ahead. I love you, always. You are my everything, Chismdi Blessing. Every moment with you is a gift. I love you more than words can say! 💕";
     const emojis = [
         "🌸",
         "💖",
@@ -124,7 +124,7 @@
                     <h1
                         class="text-4xl md:text-5xl font-bold bg-gradient-to-r from-pink-500 via-purple-500 to-red-500 bg-clip-text text-transparent mb-8 font-funky"
                     >
-                        For You, My Love 💖
+                        For You, My Love <span class="text-red-500">💖</span>
                     </h1>
                     <p
                         class="text-2xl md:text-3xl font-funky text-slate-700 leading-relaxed min-h-[250px] font-medium"
