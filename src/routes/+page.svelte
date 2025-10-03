@@ -213,12 +213,9 @@
             </h2>
             <div class="grid grid-cols-7 gap-2">
                 {#each days.filter((d) => d.month === "prev") as day}
-                    <button
-                        class="w-10 h-10 rounded-full hover:bg-red-100 text-sm font-medium font-inter transition-colors"
-                        on:click={() => selectDate(day.date)}
-                    >
-                        {new Date(day.date).getDate()}
-                    </button>
+                    <button on:click={() => selectDate(day.date)}>
+    {day.date.getDate()}
+</button>
                 {/each}
             </div>
             <div class="flex justify-end mt-4">
