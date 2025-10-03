@@ -1,5 +1,5 @@
 // Service Worker: Network-first strategy
-const CACHE_NAME = 'chycndi-tracker-v1';
+const CACHE_NAME = 'chycndi-tracker-v2';
 
 // Install event - pre-cache root (optional)
 self.addEventListener('install', (event) => {
