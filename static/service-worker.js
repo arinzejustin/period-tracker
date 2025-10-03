@@ -1,18 +1,17 @@
+// Service Worker: Network-first strategy
 const CACHE_NAME = 'chycndi-tracker-v1';
 
-// Install event - cache all assets
+// Install event - pre-cache root (optional)
 self.addEventListener('install', (event) => {
     event.waitUntil(
-        caches.open(CACHE_NAME)
-            .then((cache) => {
-                // Cache the root
-                return cache.add('/');
-            })
-            .then(() => self.skipWaiting())
+        caches.open(CACHE_NAME).then((cache) => {
+            return cache.add('/'); // cache homepage
+        })
     );
+    self.skipWaiting();
 });
 
-// Activate event - clean up old caches
+// Activate event - remove old caches
 self.addEventListener('activate', (event) => {
     event.waitUntil(
         caches.keys().then((cacheNames) => {
@@ -27,39 +26,23 @@ self.addEventListener('activate', (event) => {
     );
 });
 
-// Fetch event - cache everything as it's requested
+// Fetch event - network first, fallback to cache
 self.addEventListener('fetch', (event) => {
     event.respondWith(
-        caches.match(event.request)
-            .then((cachedResponse) => {
-                // Return cached version if available
-                if (cachedResponse) {
-                    return cachedResponse;
-                }
-
-                // Clone the request
-                return fetch(event.request.clone())
-                    .then((response) => {
-                        // Check if valid response
-                        if (!response || response.status !== 200 || response.type === 'error') {
-                            return response;
-                        }
-
-                        // Clone the response
-                        const responseToCache = response.clone();
-
-                        // Cache everything
-                        caches.open(CACHE_NAME)
-                            .then((cache) => {
-                                cache.put(event.request, responseToCache);
-                            });
-
-                        return response;
-                    })
-                    .catch(() => {
-                        // Return a custom offline page if you have one
-                        // return caches.match('/offline.html');
+        fetch(event.request)
+            .then((response) => {
+                // If response is good, update cache
+                if (response && response.status === 200) {
+                    const responseToCache = response.clone();
+                    caches.open(CACHE_NAME).then((cache) => {
+                        cache.put(event.request, responseToCache);
                     });
+                }
+                return response;
+            })
+            .catch(() => {
+                // If offline, try cache
+                return caches.match(event.request);
             })
     );
 });
