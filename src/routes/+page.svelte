@@ -47,7 +47,7 @@
             });
         }
 
-        // === Two future months ===
+        // === Three future months ===
         for (let monthOffset = 1; monthOffset <= 3; monthOffset++) {
             const futureMonth = (currentMonth + monthOffset) % 12;
             const futureYear =
@@ -279,7 +279,7 @@
         class="fixed inset-0 bg-black bg-opacity-40 flex items-center justify-center z-30"
     >
         <div
-            class="bg-white border p-6 rounded-xl w-96 max-h-96 overflow-y-auto"
+            class="bg-white border p-6 rounded-xl w-96 max-h-96 overflow-y-auto shadow-1"
         >
             <h2 class="text-lg font-bold mb-4 text-center">
                 When did you see your last period?
